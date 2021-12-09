@@ -5,17 +5,22 @@ const wsServer = new WebSocket.Server({
 })
 var webSockets = {} // userID: webSocket
 
-wsServer.on('connection',function(socket,req){
+wsServer.on('connection',function(sck,req){
     //some feedback to the concole
-    console.log('A client just connected');
-    //console.log(req.url);
+    var IPClient=req.socket.address().address; //completo
+    IPClient=req.socket.remoteAddress.split(':')[3];
+    
+    //stampo tutto il contenuto dell'oggetto sck
+    console.log(JSON.stringify(sck, null, 4));
 
+    console.log('il client ' + IPClient + ' si è connesso sulla porta '+ req.socket.address().port + ' e attende dati sulla porta '+req.socket.remotePort);
+    console.log('il server comunica con il client ' + IPClient + ' attraverso la porta ' + req.socket.localPort );
     //headers della richiesta
     //console.log(req.headers);
         
     //facciamo fare qualcosa quando arriva un messaggio
-    socket.on('message', function(msg){
-        console.log('Received from client: '+msg);
+    sck.on('message', function(msg){
+        console.log('messaggio ricevuto da '+ IPClient +': '+msg);
         
         //rispondi al client che ha inviato il messaggio
         //socket.send('' + msg);
