@@ -1,0 +1,19 @@
+{
+  "name": "ciao",
+  "version": "1.0.0",
+  "description": "il mio primo package nodejs",
+  "main": "ciao.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "programma",
+    "di",
+    "test"
+  ],
+  "author": "thomas casali",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.11.0"
+  }
+}

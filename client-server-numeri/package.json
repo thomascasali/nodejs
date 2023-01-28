@@ -1,0 +1,18 @@
+{
+  "name": "client-server-numeri",
+  "version": "1.0.0",
+  "description": "sistema client/server per invio, ricezione e elebaroazione di un numero",
+  "main": "server.js",
+  "dependencies": {
+    "ansi-regex": "^4.1.1",
+    "prompt-sync": "^4.2.0",
+    "strip-ansi": "^5.2.0",
+    "ws": "^8.12.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Thomas Casali",
+  "license": "ISC"
+}

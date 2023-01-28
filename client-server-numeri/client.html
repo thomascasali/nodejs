@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    var ws = new WebSocket("ws://localhost:5000");
+        
+    ws.onmessage = function (msg) {
+        console.log(typeof(msg.data));
+        if (typeof(msg.data)=="string") {
+            document.getElementById("server-response").innerHTML = msg.data;
+        }
+        console.log(msg.data);
+        if (isJsonString(msg.data)) {
+            elencoClient="Client connessi:<br>";
+            var obj = JSON.parse(msg.data);
+            obj.forEach(element => {
+                elencoClient+=element.port+"<br>";
+            });
+            document.getElementById("elenco-client").innerHTML = elencoClient;
+        }
+        else {
+            console.log(msg.data);
+            document.getElementById("server-response").innerHTML = msg.data;
+        }
+    };
+        
+    function sendMessage() {
+        var message = document.getElementById("client-message").value;
+        let obj = JSON.stringify({tipo: 'dato' , valore: '' + message + ''});
+        console.log(obj);
+        ws.send(obj);
+    }
+    function sendMode(mode) {
+        let obj = JSON.stringify({ tipo: 'operazione' , comando: '' + mode + '' });
+        console.log(obj);
+        ws.send(obj);
+    }
+
+    function isJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+  </script>
+</head>
+<body>
+    <div id="container">
+        <div id="left-column" style="float: left;">
+            <div>
+                <button type="button" onclick="sendMode('moltiplica')">Moltiplica</button>
+                <button type="button" onclick="sendMode('raddoppia')">Raddoppia</button>
+                <button type="button" onclick="sendMode('fattoriale')">Fattoriale</button>
+                <br/>
+                <input type="text" id="client-message" placeholder="Scrivi qui il numero da elaborare">
+                <button onclick="sendMessage()">Invia</button>
+            </div>
+            <div id="server-response"></div>
+        </div>
+        <div id="elenco-client" style="background-color: bisque;float: right;">
+            <!-- questo DIV contiene l'elenco dei client connessi -->
+        </div>
+    </div>
+</body>
+</html>
