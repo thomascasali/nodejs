@@ -5,11 +5,11 @@
     var ws = new WebSocket("ws://localhost:5000");
         
     ws.onmessage = function (msg) {
-        console.log(typeof(msg.data));
+        console.log("ricevuta " + typeof(msg.data) +": ");
+        console.log(msg.data);
         if (typeof(msg.data)=="string") {
             document.getElementById("server-response").innerHTML = msg.data;
         }
-        console.log(msg.data);
         if (isJsonString(msg.data)) {
             elencoClient="Client connessi:<br>";
             var obj = JSON.parse(msg.data);
