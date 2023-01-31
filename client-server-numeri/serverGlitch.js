@@ -7,6 +7,8 @@ console.log("Il Server è attivo e aspetta pacchetti sulla porta " + wsServer.op
 
 let operation = "";
 let elencoClient = [];
+let msgToSend="";
+let obj,payload;
 
 wsServer.on("connection" , (socket,req) => {
     console.log(req.headers['x-forwarded-for'].split(':')[0]);
@@ -19,7 +21,9 @@ wsServer.on("connection" , (socket,req) => {
   
     if (IPClient==undefined) IPClient="localhost";
     console.log("un client si è appena connesso, dall'IP: " + IPClient + " sulla porta " + req.socket.address().port + " e attende dati sulla porta "+req.socket.remotePort);
-    socket.send("Benvenuto, sei il " + wsServer.clients.size + "° client a connettersi");
+    msgToSend="Benvenuto, sei il " + wsServer.clients.size + "° client a connettersi"
+    payload='{"tipo":"messaggio","valore":"'+msgToSend+'"}';
+    socket.send(payload);
     //invia a tutti i client l'elenco dei client connessi
     //let elencoClient=[];
     //wsServer.clients.forEach((c)=>{elencoClient.push(c._socket._peername);});
@@ -27,9 +31,8 @@ wsServer.on("connection" , (socket,req) => {
     wsServer.clients.forEach((c)=>{c.send(JSON.stringify(elencoClient));});
     //fine invio
 
+
     socket.on("message" , (msg) => {
-        let msgToSend="";
-        let obj;
         msg=msg.toString();
         console.log(msg);
         try{
@@ -44,14 +47,16 @@ wsServer.on("connection" , (socket,req) => {
             operation= obj.comando;
             msgToSend="Da adesso il server eseguirà l'operazione: " + operation;
             //informo tutti i client connessi che è stata modificata l'operazione svolta dal server
-            wsServer.clients.forEach((c)=>{c.send(msgToSend);});
+            payload='{"tipo":"messaggio","valore":"'+msgToSend+'"}';
+            wsServer.clients.forEach((c)=>{c.send(payload);});
         } 
         if (obj.tipo=='dato') {
             console.log("ho ricevuto il valore: " + obj.valore);
             msgToSend=EseguiOperazione(obj.valore);
             console.log("Invio il messaggio " + msgToSend + " a " + wsServer.clients.size + " client");
             //informo tutti i client connessi sul risultato dell'operazione svolta dal server
-            wsServer.clients.forEach((c)=>{c.send(msgToSend);});
+            payload='{"tipo":"risultato","valore":"'+msgToSend+'"}';
+            wsServer.clients.forEach((c)=>{c.send(payload);});
         }
     });
   

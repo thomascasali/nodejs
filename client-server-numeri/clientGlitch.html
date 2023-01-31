@@ -7,20 +7,30 @@
     ws.onmessage = function (msg) {
         console.log("ricevuta " + typeof(msg.data) +": ");
         console.log(msg.data);
+        console.log(isJsonString(msg.data));
         if (typeof(msg.data)=="string") {
-            document.getElementById("server-response").innerHTML = msg.data;
+            //document.getElementById("server-response").innerHTML = msg.data;
         }
         if (isJsonString(msg.data)) {
-            elencoClient="Client connessi:<br>";
+            console.log("elaboro oggetto JSON");
             var obj = JSON.parse(msg.data);
-            obj.forEach(element => {
-                elencoClient+=element.address + ":<span style='color:blue'>" + element.port+"</span><br>";
-            });
-            document.getElementById("elenco-client").innerHTML = elencoClient;
+            if (obj.tipo=="messaggio"){
+                document.getElementById("server-msg").innerHTML = obj.valore;
+            }
+            else if (obj.tipo=="risultato"){
+                document.getElementById("server-result").innerHTML = obj.valore;
+            }
+            else {
+                elencoClient="Client connessi:<br>";
+                obj.forEach(element => {
+                    elencoClient+=element.address + ":<span style='color:blue'>" + element.port+"</span><br>";
+                });
+                document.getElementById("elenco-client").innerHTML = elencoClient;
+            }
         }
         else {
             console.log(msg.data);
-            document.getElementById("server-response").innerHTML = msg.data;
+            //document.getElementById("server-response").innerHTML = msg.data;
         }
     };
         
@@ -57,7 +67,8 @@
                 <input type="text" id="client-message" placeholder="Scrivi qui il numero da elaborare">
                 <button onclick="sendMessage()">Invia</button>
             </div>
-            <div id="server-response"></div>
+            <div id="server-msg"></div>
+            <div id="server-result"></div>
         </div>
         <div id="elenco-client" style="background-color: bisque;float: right;">
             <!-- questo DIV contiene l'elenco dei client connessi -->
