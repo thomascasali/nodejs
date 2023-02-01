@@ -12,20 +12,20 @@ let obj,payload;
 
 wsServer.on("connection" , (socket,req) => {
     console.log(req.headers['x-forwarded-for'].split(':')[0]);
-    //var IPClient=req.socket.address().address; //indirizzo completo
+    //var IPClient=req.socket.address().address; //indirizzo completo, ma spesso non funziona se c'è un proxy nel mezzo
     //IPClient=req.socket.remoteAddress.split(':')[3];
     let IPClient=req.headers['x-forwarded-for'].split(':')[0].replace(",","");
+    if (IPClient==undefined) IPClient="localhost";
+    
     let portClient=socket._socket.remotePort;
     elencoClient.push({ address: IPClient, port: portClient });
-    //ogni volta che un client si disconnette devo eliminare l'stanza dal vettore
-  
-    if (IPClient==undefined) IPClient="localhost";
+    
     console.log("un client si è appena connesso, dall'IP: " + IPClient + " sulla porta " + req.socket.address().port + " e attende dati sulla porta "+req.socket.remotePort);
+    
     msgToSend="Benvenuto, sei il " + wsServer.clients.size + "° client a connettersi"
     payload='{"tipo":"messaggio","valore":"'+msgToSend+'"}';
     socket.send(payload);
     //invia a tutti i client l'elenco dei client connessi
-    //let elencoClient=[];
     //wsServer.clients.forEach((c)=>{elencoClient.push(c._socket._peername);});
     console.log(elencoClient);
     wsServer.clients.forEach((c)=>{c.send(JSON.stringify(elencoClient));});
