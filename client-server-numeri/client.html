@@ -5,7 +5,7 @@
     var ws = new WebSocket("ws://localhost:5000");
         
     ws.onmessage = function (msg) {
-        console.log("ricevuta " + typeof(msg.data) + ":");
+        console.log("ricevuta " + typeof(msg.data) +": ");
         console.log(msg.data);
         if (typeof(msg.data)=="string") {
             //se arriva una stringa la visualizzo nel DIV
